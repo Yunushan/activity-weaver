@@ -2,7 +2,7 @@
   "name": "@activityweaver/extension",
   "version": "0.1.0",
   "private": true,
-  "description": "ActivityWeaver Chromium Manifest V3 extension.",
+  "description": "ActivityWeaver cross-browser Manifest V3 WebExtension.",
   "license": "0BSD",
   "type": "module",
   "dependencies": {

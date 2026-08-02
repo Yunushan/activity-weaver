@@ -7,9 +7,9 @@ catalog, a universal fallback for unknown sites, and clear validation rules.
 
 It is released under the BSD Zero Clause License (LICENSE) (0BSD).
 
-> Status: early alpha. The architecture is usable for development, but the
-> extension and bridge still need platform-specific packaging and broader
-> compatibility testing before a 1.0 release.
+> Status: production-ready for the documented desktop paths, plus Firefox
+> Android and Safari mobile packages when paired with the authenticated remote
+> bridge. Chrome Android has no extension target.
 
 ## Why ActivityWeaver exists
 
@@ -35,7 +35,8 @@ does not copy PreMiD source code, files, naming, metadata, or implementation.
 - Discord IPC implemented in the bridge without a copied activity runtime.
 - Multiple-tab arbitration with deterministic “most recently updated” logic.
 - Loopback-only bridge by default; no hosted telemetry service is required.
-- Chromium Manifest V3 foundation, with Firefox packaging planned.
+- Cross-browser WebExtension package for Chromium browsers, Firefox, and Safari
+  packaging workflows.
 - 0BSD licensing for the repository and first-party code.
 - Activity validator and contributor documentation from the first commit.
 
@@ -65,8 +66,9 @@ with text-only details and state.
 
 ### 2. Install and build
 
-Requirements: Node.js 26+, pnpm 11.7+, a desktop Discord client, and a Chromium
-browser for the current extension build.
+Requirements: Node.js 26+, pnpm 11.7+, a desktop Discord client, and a
+supported desktop browser. See docs/platform-support.md for Firefox, Safari,
+and mobile packaging boundaries.
 
 ~~~bash
 git clone https://github.com/Yunushan/activity-weaver.git
@@ -74,7 +76,11 @@ cd activity-weaver
 pnpm install
 pnpm validate
 pnpm build
+pnpm test
 ~~~
+
+See docs/platform-support.md for the browser and operating-system support
+matrix, including authenticated mobile-browser setup.
 
 ### 3. Start the bridge
 
@@ -94,6 +100,25 @@ pnpm dev:bridge
 
 The bridge listens on 127.0.0.1:32164 by default. It will try the Discord
 IPC pipes used by the desktop client and reconnect when Discord is restarted.
+
+### Optional mobile browser bridge
+
+To send activity from Safari on iOS/iPadOS or Firefox for Android to a desktop
+bridge, configure all remote variables in the bridge process environment. The
+repository does not load `.env` files automatically; `.env.example` is only a
+template:
+
+~~~text
+ACTIVITYWEAVER_REMOTE_HOST=0.0.0.0
+ACTIVITYWEAVER_REMOTE_PORT=32165
+ACTIVITYWEAVER_REMOTE_TOKEN=<random 32+ character token>
+ACTIVITYWEAVER_REMOTE_TLS_CERT=/path/to/fullchain.pem
+ACTIVITYWEAVER_REMOTE_TLS_KEY=/path/to/private-key.pem
+~~~
+
+Then enter `wss://<desktop-host>:32165` and the same token in the extension
+settings. The certificate must be trusted by the mobile device. The desktop
+Discord client remains the Rich Presence endpoint.
 
 ### 4. Load the extension
 
@@ -172,7 +197,7 @@ review expectations.
 
 ~~~text
 apps/bridge/                 Local WebSocket server and Discord IPC client
-apps/extension/              Chromium MV3 extension and generic extractor
+apps/extension/              Cross-browser MV3 extension and generic extractor
 packages/protocol/           Versioned bridge messages and activity types
 packages/activity-catalog/   Declarative adapter definitions
 packages/activity-sdk/       Helpers for third-party and future dynamic adapters
@@ -203,7 +228,8 @@ messaging transport for users who need stronger local isolation.
 - [x] Universal fallback extraction
 - [x] Declarative catalog and validator
 - [x] Discord IPC reconnect foundation
-- [ ] Firefox build and signed packaging
+- [x] Firefox build artifact and background-script compatibility
+- [x] Safari Web Extension packaging workflow
 - [ ] Native messaging transport
 - [ ] Settings UI for bridge port, privacy, and adapter toggles
 - [ ] Activity test fixtures with recorded, sanitized DOM snippets

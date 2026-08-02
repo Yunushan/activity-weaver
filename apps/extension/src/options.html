@@ -15,10 +15,12 @@
   </head>
   <body>
     <h1>ActivityWeaver</h1>
-    <p>The bridge stays on loopback. Change this only if you deliberately configured a different local port.</p>
+    <p>The default bridge stays on loopback. For a mobile browser, use a <code>wss://</code> endpoint with a TLS certificate and access token configured on the desktop bridge.</p>
     <form id="settings">
-      <label for="port">Bridge port</label>
-      <input id="port" name="port" type="number" min="1" max="65535" required>
+      <label for="bridgeUrl">Bridge endpoint</label>
+      <input id="bridgeUrl" name="bridgeUrl" type="url" required>
+      <label for="bridgeToken">Remote access token</label>
+      <input id="bridgeToken" name="bridgeToken" type="password" autocomplete="off">
       <label>
         <input id="enabled" name="enabled" type="checkbox">
         Enable presence updates

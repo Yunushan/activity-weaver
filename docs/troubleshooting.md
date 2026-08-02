@@ -9,6 +9,15 @@
 - Restart Discord and then restart the bridge if Discord was updated.
 - Make sure Discord's activity privacy settings allow Rich Presence.
 
+## Mobile browser cannot connect
+
+- Confirm the desktop bridge has all remote variables set, including a trusted
+  TLS certificate/key pair and a token of at least 32 characters.
+- Use the `wss://` endpoint and the same token in the extension settings.
+- Confirm the mobile device trusts the certificate and can reach the configured
+  remote port; do not use the local `ws://127.0.0.1` endpoint on mobile.
+- The Discord desktop client must remain running on the bridge host.
+
 ## The extension cannot connect
 
 - Confirm the bridge says it is listening on 127.0.0.1:32164.

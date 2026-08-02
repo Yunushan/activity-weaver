@@ -27,6 +27,12 @@ the latest activity from each tab, selects the freshest non-empty activity,
 and sends it to Discord. It is intentionally independent from the catalog so
 catalog changes cannot change the Discord transport.
 
+The bridge also has an opt-in authenticated remote endpoint for mobile browser
+extensions. It is disabled by default and requires a TLS certificate, private
+key, and strong access token. Remote clients submit the same validated protocol
+after a token-authenticated hello; the Discord IPC socket remains on the desktop
+bridge.
+
 ### Discord IPC
 
 The first transport uses Discord's local IPC framing: an 8-byte little-endian

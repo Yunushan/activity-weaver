@@ -20,8 +20,9 @@ form fields, full page HTML, full DOM snapshots, private API responses, or
 passwords. If a selector might match a personal identifier, choose a safer
 fallback or use urlMode: origin.
 
-## Local transport
+## Local and remote transport
 
-The WebSocket bridge binds to 127.0.0.1, not all interfaces. The first
-transport is intended for a single desktop user. Do not expose it through a
-reverse proxy or firewall rule without adding authentication.
+The WebSocket bridge binds to 127.0.0.1 by default. Mobile browser support can
+opt into a separate TLS endpoint with a strong token, but that endpoint must be
+explicitly configured and must not be replaced with an unauthenticated LAN
+listener or reverse proxy. The token is sent only inside the TLS connection.

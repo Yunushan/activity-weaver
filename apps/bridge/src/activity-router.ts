@@ -6,6 +6,8 @@ type ActivityChange = (activity: PresenceActivity | undefined) => Promise<void> 
 export class ActivityRouter {
   private readonly entries = new Map<string, ActivityEnvelope>();
   private flushTimer: NodeJS.Timeout | undefined;
+  private flushInProgress = false;
+  private flushAgain = false;
   private currentKey: string | undefined;
   private currentObservedAt = 0;
 
@@ -28,11 +30,28 @@ export class ActivityRouter {
     if (this.flushTimer) return;
     this.flushTimer = setTimeout(() => {
       this.flushTimer = undefined;
-      void this.flush();
+      this.flush();
     }, 150);
   }
 
-  private async flush(): Promise<void> {
+  private flush(): void {
+    if (this.flushInProgress) {
+      this.flushAgain = true;
+      return;
+    }
+    this.flushInProgress = true;
+    void this.applyCurrent().catch((error: unknown) => {
+      this.logger.error("Failed to update Discord presence", error instanceof Error ? error.message : error);
+    }).finally(() => {
+      this.flushInProgress = false;
+      if (this.flushAgain) {
+        this.flushAgain = false;
+        this.scheduleFlush();
+      }
+    });
+  }
+
+  private async applyCurrent(): Promise<void> {
     const latest = [...this.entries.entries()]
       .sort((left, right) => right[1].observedAt - left[1].observedAt)[0];
     const nextKey = latest?.[0];

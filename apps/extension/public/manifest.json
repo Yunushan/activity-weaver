@@ -13,6 +13,7 @@
     }
   ],
   "background": {
+    "scripts": ["background.js"],
     "service_worker": "background.js",
     "type": "module"
   },
@@ -22,8 +23,8 @@
   "options_page": "options.html",
   "browser_specific_settings": {
     "gecko": {
-      "id": "activityweaver@example.invalid",
-      "strict_min_version": "109.0"
+      "id": "{8d0f7c1f-6a9c-4f0a-91b7-1a6f2b7e5c30}",
+      "strict_min_version": "121.0"
     }
   }
 }

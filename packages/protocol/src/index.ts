@@ -1,5 +1,6 @@
 export const PROTOCOL_VERSION = 1 as const;
 export const DEFAULT_BRIDGE_PORT = 32164 as const;
+const MAX_CLOCK_SKEW_MS = 5 * 60 * 1000;
 
 export type UrlMode = "path" | "origin" | "none";
 
@@ -50,6 +51,7 @@ export type BridgeRequest =
       type: "hello";
       protocol: number;
       client: "extension" | "cli" | "test";
+      authToken?: string;
     }
   | {
       type: "set_activity";
@@ -156,7 +158,9 @@ function parseActivity(value: unknown): PresenceActivity | null {
   if (isRecord(value.timestamps)) {
     const start = parseTimestamp(value.timestamps.start);
     const end = parseTimestamp(value.timestamps.end);
-    if (start || end) activity.timestamps = { start, end };
+    if ((start || end) && (!start || !end || end >= start)) {
+      activity.timestamps = { start, end };
+    }
   }
 
   if (isRecord(value.assets)) {
@@ -211,7 +215,11 @@ function parseSource(value: unknown): ActivitySource | null {
   if (rawUrl) {
     try {
       const parsed = new URL(rawUrl);
-      if (["http:", "https:"].includes(parsed.protocol)) source.url = parsed.toString();
+      if (["http:", "https:"].includes(parsed.protocol)) {
+        parsed.username = "";
+        parsed.password = "";
+        source.url = parsed.toString();
+      }
     } catch {
       // An invalid URL is simply omitted from optional source metadata.
     }
@@ -232,7 +240,8 @@ export function parseBridgeRequest(value: unknown): BridgeRequest | null {
   if (value.type === "hello") {
     const client = value.client;
     if (client === "extension" || client === "cli" || client === "test") {
-      return { type: "hello", protocol: PROTOCOL_VERSION, client };
+      const authToken = boundedString(value.authToken, 512);
+      return { type: "hello", protocol: PROTOCOL_VERSION, client, ...(authToken ? { authToken } : {}) };
     }
     return null;
   }
@@ -242,7 +251,7 @@ export function parseBridgeRequest(value: unknown): BridgeRequest | null {
     const source = parseSource(value.envelope.source);
     const activity = parseActivity(value.envelope.activity);
     const observedAt = value.envelope.observedAt;
-    if (!source || !activity || typeof observedAt !== "number" || !Number.isFinite(observedAt)) {
+    if (!source || !activity || !isValidObservedAt(observedAt)) {
       return null;
     }
     return {
@@ -267,6 +276,8 @@ export function normaliseUrl(rawUrl: string, mode: UrlMode = "path"): string | u
   try {
     const url = new URL(rawUrl);
     if (!["http:", "https:"].includes(url.protocol)) return undefined;
+    url.username = "";
+    url.password = "";
     url.hash = "";
     url.search = "";
     if (mode === "origin") url.pathname = "/";
@@ -274,4 +285,11 @@ export function normaliseUrl(rawUrl: string, mode: UrlMode = "path"): string | u
   } catch {
     return undefined;
   }
+}
+
+function isValidObservedAt(value: unknown): value is number {
+  return typeof value === "number"
+    && Number.isSafeInteger(value)
+    && value > 0
+    && value <= Date.now() + MAX_CLOCK_SKEW_MS;
 }

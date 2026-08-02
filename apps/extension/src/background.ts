@@ -20,12 +20,18 @@ type ContentMessage =
 const pending = new Map<string, string>();
 let socket: WebSocket | undefined;
 let reconnectTimer: number | undefined;
-let bridgePort: number = DEFAULT_BRIDGE_PORT;
+const DEFAULT_BRIDGE_URL = "ws://127.0.0.1:" + DEFAULT_BRIDGE_PORT;
+let bridgeUrl = DEFAULT_BRIDGE_URL;
+let bridgeToken = "";
+let clientInstanceId = "client:unknown";
 let enabled = true;
 
 void loadSettings();
 chrome.storage.onChanged.addListener((changes) => {
-  if (changes.bridgePort?.newValue !== undefined || changes.enabled?.newValue !== undefined) {
+  if (changes.bridgeUrl?.newValue !== undefined
+    || changes.bridgeToken?.newValue !== undefined
+    || changes.bridgePort?.newValue !== undefined
+    || changes.enabled?.newValue !== undefined) {
     void loadSettings(true);
   }
 });
@@ -38,7 +44,7 @@ chrome.runtime.onMessage.addListener((message: unknown, sender, sendResponse) =>
   }
 
   const tabId = sender.tab?.id;
-  const sourceId = tabId === undefined ? "runtime:" + (sender.id ?? "unknown") : "tab:" + tabId;
+  const sourceId = clientInstanceId + ":" + (tabId === undefined ? "runtime:" + (sender.id ?? "unknown") : "tab:" + tabId);
   if (content.type === "activity_update") {
     const request: BridgeRequest = {
       type: "set_activity",
@@ -71,10 +77,22 @@ chrome.runtime.onMessage.addListener((message: unknown, sender, sendResponse) =>
 
 async function loadSettings(reconnect = false): Promise<void> {
   const settings = await chrome.storage.local.get({
+    bridgeUrl: DEFAULT_BRIDGE_URL,
     bridgePort: DEFAULT_BRIDGE_PORT,
+    bridgeToken: "",
+    clientInstanceId: "",
     enabled: true
   });
-  bridgePort = validPort(settings.bridgePort) ? settings.bridgePort : DEFAULT_BRIDGE_PORT;
+  bridgeUrl = validBridgeUrl(settings.bridgeUrl)
+    ? settings.bridgeUrl
+    : validPort(settings.bridgePort) ? "ws://127.0.0.1:" + settings.bridgePort : DEFAULT_BRIDGE_URL;
+  bridgeToken = typeof settings.bridgeToken === "string" ? settings.bridgeToken.trim() : "";
+  clientInstanceId = typeof settings.clientInstanceId === "string" && /^[a-z0-9:-]{8,64}$/i.test(settings.clientInstanceId)
+    ? settings.clientInstanceId
+    : "client:" + crypto.randomUUID();
+  if (settings.clientInstanceId !== clientInstanceId) {
+    await chrome.storage.local.set({ clientInstanceId });
+  }
   enabled = Boolean(settings.enabled);
   if (!enabled) pending.clear();
   if (reconnect) {
@@ -96,12 +114,13 @@ function sendOrQueue(sourceId: string, request: BridgeRequest): void {
 
 function connect(): void {
   if (socket && (socket.readyState === WebSocket.OPEN || socket.readyState === WebSocket.CONNECTING)) return;
-  socket = new WebSocket("ws://127.0.0.1:" + bridgePort);
+  socket = new WebSocket(bridgeUrl);
   socket.addEventListener("open", () => {
     const hello: BridgeRequest = {
       type: "hello",
       protocol: PROTOCOL_VERSION,
-      client: "extension"
+      client: "extension",
+      ...(bridgeToken ? { authToken: bridgeToken } : {})
     };
     socket?.send(JSON.stringify(hello));
     for (const message of pending.values()) socket?.send(message);
@@ -151,4 +170,20 @@ function optionalString(value: unknown): string | undefined {
 
 function validPort(value: unknown): value is number {
   return typeof value === "number" && Number.isInteger(value) && value > 0 && value < 65536;
+}
+
+function validBridgeUrl(value: unknown): value is string {
+  if (typeof value !== "string" || !value.trim()) return false;
+  try {
+    const parsed = new URL(value);
+    if (parsed.protocol !== "ws:" && parsed.protocol !== "wss:") return false;
+    if (parsed.username || parsed.password) return false;
+    return parsed.protocol === "wss:" || isLoopbackHost(parsed.hostname);
+  } catch {
+    return false;
+  }
+}
+
+function isLoopbackHost(hostname: string): boolean {
+  return hostname === "127.0.0.1" || hostname === "localhost" || hostname === "[::1]" || hostname === "::1";
 }
