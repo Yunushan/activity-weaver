@@ -65,7 +65,7 @@ with text-only details and state.
 
 ### 2. Install and build
 
-Requirements: Node.js 20+, pnpm 11.7+, a desktop Discord client, and a Chromium
+Requirements: Node.js 26+, pnpm 11.7+, a desktop Discord client, and a Chromium
 browser for the current extension build.
 
 ~~~bash
