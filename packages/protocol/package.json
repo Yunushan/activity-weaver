@@ -1,0 +1,22 @@
+{
+  "name": "@activityweaver/protocol",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Shared ActivityWeaver protocol and activity catalog types.",
+  "license": "0BSD",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "lint": "tsc -p tsconfig.json --noEmit",
+    "test": "node --input-type=module -e \"import('./dist/index.js').then(() => console.log('protocol ok'))\"",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  }
+}

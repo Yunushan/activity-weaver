@@ -1,0 +1,31 @@
+{
+  "id": "example-site",
+  "name": "Example Site",
+  "version": 1,
+  "description": "A minimal adapter example for a public website.",
+  "match": {
+    "hostnames": ["example.com", "*.example.com"],
+    "pathPrefixes": ["/"]
+  },
+  "extract": {
+    "title": {
+      "selectors": ["h1", "meta[property='og:title']"],
+      "attribute": "content"
+    },
+    "description": {
+      "selectors": ["meta[name='description']"],
+      "attribute": "content"
+    },
+    "image": {
+      "selectors": ["meta[property='og:image']"],
+      "attribute": "content"
+    }
+  },
+  "display": {
+    "details": "{title}",
+    "state": "Example Site"
+  },
+  "privacy": {
+    "urlMode": "origin"
+  }
+}

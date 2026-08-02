@@ -1,0 +1,39 @@
+{
+  "id": "netflix",
+  "name": "Netflix",
+  "version": 1,
+  "description": "Visible title and media progress on Netflix.",
+  "match": {
+    "hostnames": ["netflix.com", "www.netflix.com"],
+    "pathPrefixes": ["/watch", "/browse"]
+  },
+  "extract": {
+    "title": {
+      "selectors": [
+        "[data-uia='video-title']",
+        ".ellipsize-text",
+        "h1",
+        "meta[property='og:title']"
+      ],
+      "attribute": "content"
+    },
+    "description": {
+      "selectors": ["meta[name='description']"],
+      "attribute": "content"
+    },
+    "image": {
+      "selectors": ["meta[property='og:image']"],
+      "attribute": "content"
+    }
+  },
+  "display": {
+    "details": "{title}",
+    "state": "Watching Netflix"
+  },
+  "privacy": {
+    "urlMode": "origin"
+  },
+  "media": {
+    "enabled": true
+  }
+}

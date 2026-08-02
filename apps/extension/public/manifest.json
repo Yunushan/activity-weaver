@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "ActivityWeaver",
+  "version": "0.1.0",
+  "description": "Show your current browser activity in Discord through a local ActivityWeaver bridge.",
+  "permissions": ["storage"],
+  "host_permissions": ["<all_urls>"],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "ActivityWeaver"
+  },
+  "options_page": "options.html",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "activityweaver@example.invalid",
+      "strict_min_version": "109.0"
+    }
+  }
+}

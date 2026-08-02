@@ -1,0 +1,25 @@
+{
+  "name": "@activityweaver/extension",
+  "version": "0.1.0",
+  "private": true,
+  "description": "ActivityWeaver Chromium Manifest V3 extension.",
+  "license": "0BSD",
+  "type": "module",
+  "dependencies": {
+    "@activityweaver/activity-catalog": "workspace:*",
+    "@activityweaver/protocol": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.280",
+    "typescript": "^5.8.3",
+    "vite": "^6.1.0"
+  },
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch",
+    "lint": "node ../../tools/generate-catalog.mjs && tsc -p tsconfig.json --noEmit",
+    "preview": "vite preview",
+    "test": "node --input-type=module -e \"console.log('extension build is tested by vite')\"",
+    "typecheck": "node ../../tools/generate-catalog.mjs && tsc -p tsconfig.json --noEmit"
+  }
+}

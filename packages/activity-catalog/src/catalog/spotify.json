@@ -1,0 +1,40 @@
+{
+  "id": "spotify",
+  "name": "Spotify Web",
+  "version": 1,
+  "description": "Publicly visible music playback metadata.",
+  "match": {
+    "hostnames": ["open.spotify.com"],
+    "pathPrefixes": ["/"]
+  },
+  "extract": {
+    "title": {
+      "selectors": [
+        "[data-testid='nowplaying-track-link']",
+        "[data-testid='entityTitle']",
+        "meta[property='og:title']"
+      ],
+      "attribute": "content"
+    },
+    "author": {
+      "selectors": [
+        "[data-testid='nowplaying-artist-link']",
+        "[data-testid='creator-link']"
+      ]
+    },
+    "image": {
+      "selectors": ["meta[property='og:image']"],
+      "attribute": "content"
+    }
+  },
+  "display": {
+    "details": "{title}",
+    "state": "Listening on Spotify"
+  },
+  "privacy": {
+    "urlMode": "origin"
+  },
+  "media": {
+    "enabled": true
+  }
+}

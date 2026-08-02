@@ -1,0 +1,42 @@
+{
+  "id": "youtube",
+  "name": "YouTube",
+  "version": 1,
+  "description": "Video pages and public channel pages.",
+  "match": {
+    "hostnames": ["youtube.com", "www.youtube.com", "m.youtube.com"],
+    "pathPrefixes": ["/watch", "/shorts", "/live", "/@"]
+  },
+  "extract": {
+    "title": {
+      "selectors": [
+        "h1.ytd-watch-metadata",
+        "h1.title",
+        "meta[property='og:title']"
+      ],
+      "attribute": "content"
+    },
+    "state": {
+      "selectors": ["#owner-name", "ytd-channel-name", "meta[name='title']"],
+      "attribute": "content"
+    },
+    "description": {
+      "selectors": ["meta[name='description']"],
+      "attribute": "content"
+    },
+    "image": {
+      "selectors": ["meta[property='og:image']"],
+      "attribute": "content"
+    }
+  },
+  "display": {
+    "details": "{title}",
+    "state": "Watching YouTube"
+  },
+  "privacy": {
+    "urlMode": "origin"
+  },
+  "media": {
+    "enabled": true
+  }
+}

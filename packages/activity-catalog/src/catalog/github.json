@@ -1,0 +1,42 @@
+{
+  "id": "github",
+  "name": "GitHub",
+  "version": 1,
+  "description": "Public repository, issue, pull request, and profile pages.",
+  "match": {
+    "hostnames": ["github.com", "*.github.com"],
+    "pathPrefixes": ["/"]
+  },
+  "extract": {
+    "title": {
+      "selectors": [
+        "[data-component='PHI'] h1",
+        "[data-testid='issue-title']",
+        "main h1",
+        "h1"
+      ]
+    },
+    "state": {
+      "selectors": [
+        "[data-testid='repository-description']",
+        "[itemprop='about']",
+        "meta[name='description']"
+      ],
+      "attribute": "content"
+    },
+    "author": {
+      "selectors": ["[itemprop='author']", ".author", "[data-hovercard-type='user']"]
+    },
+    "image": {
+      "selectors": ["meta[property='og:image']"],
+      "attribute": "content"
+    }
+  },
+  "display": {
+    "details": "{title}",
+    "state": "Browsing GitHub"
+  },
+  "privacy": {
+    "urlMode": "path"
+  }
+}

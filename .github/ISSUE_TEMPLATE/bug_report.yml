@@ -1,0 +1,41 @@
+name: Bug report
+description: Report a reproducible ActivityWeaver problem
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not include passwords, cookies, private URLs, account identifiers,
+        or screenshots containing personal data.
+  - type: input
+    id: version
+    attributes:
+      label: ActivityWeaver version
+      placeholder: 0.1.0
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and version
+      placeholder: Chrome 151
+    validations:
+      required: true
+  - type: input
+    id: site
+    attributes:
+      label: Affected site
+      placeholder: example.com
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps
+      description: Include the bridge log message and the smallest safe reproduction.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Sanitized logs
+      render: text

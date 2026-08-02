@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ActivityWeaver settings</title>
+    <style>
+      :root { color-scheme: light dark; font-family: system-ui, sans-serif; }
+      body { max-width: 38rem; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; }
+      label { display: block; margin: 1rem 0 .35rem; font-weight: 600; }
+      input { width: 100%; box-sizing: border-box; padding: .6rem; border-radius: .4rem; border: 1px solid #888; }
+      button { margin-top: 1rem; padding: .6rem 1rem; border-radius: .4rem; border: 0; cursor: pointer; }
+      #status { min-height: 1.5em; color: #2a7; }
+    </style>
+  </head>
+  <body>
+    <h1>ActivityWeaver</h1>
+    <p>The bridge stays on loopback. Change this only if you deliberately configured a different local port.</p>
+    <form id="settings">
+      <label for="port">Bridge port</label>
+      <input id="port" name="port" type="number" min="1" max="65535" required>
+      <label>
+        <input id="enabled" name="enabled" type="checkbox">
+        Enable presence updates
+      </label>
+      <button type="submit">Save settings</button>
+    </form>
+    <p id="status" role="status"></p>
+    <script type="module" src="./options.ts"></script>
+  </body>
+</html>

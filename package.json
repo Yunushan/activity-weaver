@@ -1,0 +1,29 @@
+{
+  "name": "activityweaver",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A privacy-first, extensible browser activity bridge for Discord Rich Presence.",
+  "license": "0BSD",
+  "author": "ActivityWeaver contributors",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Yunushan/activity-weaver.git"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "packageManager": "pnpm@11.7.0",
+  "scripts": {
+    "build": "pnpm -r build",
+    "build:bridge": "pnpm --filter @activityweaver/bridge build",
+    "build:extension": "pnpm --filter @activityweaver/extension build",
+    "dev:bridge": "pnpm --filter @activityweaver/bridge dev",
+    "lint": "pnpm -r lint",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck",
+    "validate": "node tools/validate-activities.mjs"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  }
+}

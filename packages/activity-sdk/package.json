@@ -1,0 +1,25 @@
+{
+  "name": "@activityweaver/activity-sdk",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Authoring helpers for ActivityWeaver adapters.",
+  "license": "0BSD",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "dependencies": {
+    "@activityweaver/protocol": "workspace:*"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "lint": "tsc -p tsconfig.json --noEmit",
+    "test": "node --input-type=module -e \"import('./dist/index.js').then(() => console.log('sdk ok'))\"",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  }
+}

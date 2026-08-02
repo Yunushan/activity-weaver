@@ -1,0 +1,15 @@
+node_modules/
+dist/
+coverage/
+.cache/
+.pnpm-store/
+*.log
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db
+*.local
+*.tsbuildinfo
+packages/activity-catalog/src/generated.ts
+activity-weaver.zip

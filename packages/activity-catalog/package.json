@@ -1,0 +1,25 @@
+{
+  "name": "@activityweaver/activity-catalog",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Declarative ActivityWeaver site adapters.",
+  "license": "0BSD",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "dependencies": {
+    "@activityweaver/protocol": "workspace:*"
+  },
+  "scripts": {
+    "build": "node ../../tools/generate-catalog.mjs && tsc -p tsconfig.json",
+    "lint": "node ../../tools/generate-catalog.mjs && tsc -p tsconfig.json --noEmit",
+    "test": "node --input-type=module -e \"import('./dist/index.js').then(({builtInActivities}) => console.log(String(builtInActivities.length) + ' activities ok'))\"",
+    "typecheck": "node ../../tools/generate-catalog.mjs && tsc -p tsconfig.json --noEmit"
+  }
+}

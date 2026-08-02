@@ -1,0 +1,34 @@
+{
+  "id": "reddit",
+  "name": "Reddit",
+  "version": 1,
+  "description": "Public post and community pages.",
+  "match": {
+    "hostnames": ["reddit.com", "www.reddit.com", "old.reddit.com"],
+    "pathPrefixes": ["/"]
+  },
+  "extract": {
+    "title": {
+      "selectors": [
+        "[data-testid='post-title']",
+        "h1",
+        "meta[property='og:title']"
+      ],
+      "attribute": "content"
+    },
+    "state": {
+      "selectors": ["[data-testid='subreddit-name']", "shreddit-title"]
+    },
+    "image": {
+      "selectors": ["meta[property='og:image']"],
+      "attribute": "content"
+    }
+  },
+  "display": {
+    "details": "{title}",
+    "state": "Browsing Reddit"
+  },
+  "privacy": {
+    "urlMode": "origin"
+  }
+}

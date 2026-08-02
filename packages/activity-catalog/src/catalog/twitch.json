@@ -1,0 +1,40 @@
+{
+  "id": "twitch",
+  "name": "Twitch",
+  "version": 1,
+  "description": "Public live-stream pages.",
+  "match": {
+    "hostnames": ["twitch.tv", "www.twitch.tv"],
+    "pathPrefixes": ["/"]
+  },
+  "extract": {
+    "title": {
+      "selectors": [
+        "[data-a-target='stream-title']",
+        "h1[data-a-target='stream-title']",
+        "meta[property='og:title']"
+      ],
+      "attribute": "content"
+    },
+    "author": {
+      "selectors": [
+        "[data-a-target='streamer-card-title']",
+        "[data-a-target='channel-header-user-button']"
+      ]
+    },
+    "image": {
+      "selectors": ["meta[property='og:image']"],
+      "attribute": "content"
+    }
+  },
+  "display": {
+    "details": "{title}",
+    "state": "Watching Twitch"
+  },
+  "privacy": {
+    "urlMode": "origin"
+  },
+  "media": {
+    "enabled": true
+  }
+}

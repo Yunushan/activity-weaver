@@ -1,0 +1,25 @@
+{
+  "name": "@activityweaver/activity-validator",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Runtime validation primitives for ActivityWeaver catalogs.",
+  "license": "0BSD",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "dependencies": {
+    "@activityweaver/protocol": "workspace:*"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "lint": "tsc -p tsconfig.json --noEmit",
+    "test": "node --input-type=module -e \"import('./dist/index.js').then(() => console.log('validator ok'))\"",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  }
+}

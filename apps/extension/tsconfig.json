@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "allowImportingTsExtensions": false,
+    "baseUrl": ".",
+    "esModuleInterop": true,
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "noEmit": true,
+    "strict": true,
+    "target": "ES2022",
+    "types": ["chrome"],
+    "paths": {
+      "@activityweaver/protocol": ["../../packages/protocol/src/index.ts"],
+      "@activityweaver/activity-catalog": ["../../packages/activity-catalog/src/index.ts"]
+    }
+  },
+  "include": ["src/**/*.ts", "vite.config.ts"]
+}
