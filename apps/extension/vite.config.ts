@@ -1,22 +1,24 @@
 import { resolve } from "node:path";
 import { defineConfig } from "vite";
 
+const appDirectory = import.meta.dirname;
+
 export default defineConfig({
-  root: resolve(__dirname, "src"),
-  publicDir: resolve(__dirname, "public"),
+  root: resolve(appDirectory, "src"),
+  publicDir: resolve(appDirectory, "public"),
   base: "./",
   resolve: {
     preserveSymlinks: true
   },
   build: {
     emptyOutDir: true,
-    outDir: resolve(__dirname, "dist"),
+    outDir: resolve(appDirectory, "dist"),
     sourcemap: false,
     rollupOptions: {
       input: {
-        background: resolve(__dirname, "src/background.ts"),
-        content: resolve(__dirname, "src/content.ts"),
-        options: resolve(__dirname, "src/options.html")
+        background: resolve(appDirectory, "src/background.ts"),
+        content: resolve(appDirectory, "src/content.ts"),
+        options: resolve(appDirectory, "src/options.html")
       },
       output: {
         entryFileNames: "[name].js",

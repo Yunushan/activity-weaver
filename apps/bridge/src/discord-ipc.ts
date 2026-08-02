@@ -84,7 +84,7 @@ export class DiscordIpcClient {
         this.socket = socket;
         this.ready = true;
         this.receiveBuffer = Buffer.alloc(0);
-        socket.on("data", (chunk) => this.handleData(chunk));
+        socket.on("data", (chunk) => this.handleData(Buffer.from(chunk)));
         socket.on("close", () => {
           this.ready = false;
           this.socket = undefined;
