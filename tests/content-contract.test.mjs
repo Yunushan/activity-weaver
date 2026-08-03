@@ -16,3 +16,8 @@ test("background waits for settings before assigning a source identity", async (
   assert.match(source, /crypto\.randomUUID/);
 });
 
+test("background recovers the settings chain after a storage failure", async () => {
+  const source = await readFile("apps/extension/src/background.ts", "utf8");
+  assert.match(source, /settingsReady\s*=\s*settingsReady\s*\.catch\(\(\) => undefined\)\s*\.then\(\(\) => loadSettings\(true\)\)/s);
+  assert.match(source, /void settingsReady\.catch\(\(\) => undefined\)/);
+});

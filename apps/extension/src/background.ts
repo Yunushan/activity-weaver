@@ -27,12 +27,15 @@ let clientInstanceId = "client:unknown";
 let enabled = true;
 
 let settingsReady = loadSettings();
+void settingsReady.catch(() => undefined);
 chrome.storage.onChanged.addListener((changes) => {
   if (changes.bridgeUrl?.newValue !== undefined
     || changes.bridgeToken?.newValue !== undefined
     || changes.bridgePort?.newValue !== undefined
     || changes.enabled?.newValue !== undefined) {
-    settingsReady = settingsReady.then(() => loadSettings(true));
+    settingsReady = settingsReady
+      .catch(() => undefined)
+      .then(() => loadSettings(true));
     void settingsReady.catch(() => undefined);
   }
 });

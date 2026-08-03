@@ -84,7 +84,9 @@ jobs:
         run: node tools/archive-directory.mjs artifacts/activityweaver-safari artifacts/activityweaver-safari-ios.zip
       - name: Create Safari release manifest
         run: node tools/create-release-manifest.mjs artifacts/activityweaver-safari-macos.zip artifacts/activityweaver-safari-ios.zip
+      - name: Rename Safari release manifest
+        run: mv artifacts/release-manifest.json artifacts/activityweaver-safari-manifest.json
       - name: Upload Safari projects to GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release upload "$GITHUB_REF_NAME" artifacts/activityweaver-safari-macos.zip artifacts/activityweaver-safari-ios.zip artifacts/release-manifest.json#activityweaver-safari-manifest.json
+        run: gh release upload "$GITHUB_REF_NAME" artifacts/activityweaver-safari-macos.zip artifacts/activityweaver-safari-ios.zip artifacts/activityweaver-safari-manifest.json

@@ -95,6 +95,9 @@ const checks = [
       && existsSync(join(root, "tools", "check-release-artifacts.mjs"))
       && read(".github/workflows/release.yml").includes("activityweaver-firefox-android.zip")
       && read(".github/workflows/release.yml").includes("activityweaver-safari-ios.zip")
+      && read(".github/workflows/release.yml").includes("mv artifacts/release-manifest.json artifacts/activityweaver-safari-manifest.json")
+      && read(".github/workflows/release.yml").includes("artifacts/activityweaver-safari-manifest.json")
+      && !read(".github/workflows/release.yml").includes("#activityweaver-safari-manifest.json")
       && read(".github/workflows/release.yml").includes("--verify-tag")
       && existsSync(join(root, ".github", "workflows", "release.yml"))
   },
