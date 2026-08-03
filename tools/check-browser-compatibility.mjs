@@ -4,6 +4,7 @@ import { join, resolve } from "node:path";
 const root = resolve(".");
 const manifest = JSON.parse(readFileSync(join(root, "apps", "extension", "dist", "manifest.json"), "utf8"));
 const backgroundSource = readFileSync(join(root, "apps", "extension", "src", "background.ts"), "utf8");
+const contentBundle = readFileSync(join(root, "apps", "extension", "dist", "content.js"), "utf8");
 const background = manifest.background ?? {};
 const checks = [
   ["Manifest V3 is enabled", manifest.manifest_version === 3],
@@ -12,6 +13,7 @@ const checks = [
   ["Background module mode is declared", background.type === "module"],
   ["Firefox metadata is present", manifest.browser_specific_settings?.gecko?.strict_min_version === "121.0" && typeof manifest.browser_specific_settings?.gecko?.id === "string"],
   ["All browser entrypoints were built", ["background.js", "content.js", "options.html", "options.js"].every((file) => existsSync(join(root, "apps", "extension", "dist", file)))],
+  ["Content script is a standalone classic bundle", !/^\s*import\s/m.test(contentBundle) && !/^\s*export\s/m.test(contentBundle)],
   ["Authenticated mobile endpoint support is built", backgroundSource.includes("wss:") && backgroundSource.includes("authToken")],
   ["Remote clients have installation-scoped source IDs", backgroundSource.includes("clientInstanceId") && backgroundSource.includes("crypto.randomUUID")],
   ["Firefox artifact preparation exists", existsSync(join(root, "tools", "package-firefox.mjs"))],

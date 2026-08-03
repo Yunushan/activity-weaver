@@ -19,9 +19,10 @@ const checks = [
   {
     name: "CI runs the complete quality gate",
     weight: 10,
-    pass: ["pnpm validate", "pnpm build", "pnpm lint", "pnpm typecheck", "pnpm test", "pnpm audit --audit-level=high", "pnpm check:production", "pnpm check:browsers", "pnpm check:platforms"]
+    pass: ["pnpm validate", "pnpm build", "pnpm lint", "pnpm typecheck", "pnpm test", "pnpm test:e2e", "pnpm audit --audit-level=high", "pnpm check:production", "pnpm check:browsers", "pnpm check:platforms", "pnpm check:ci"]
       .every((command) => read(".github/workflows/ci.yml").includes(command))
       && read(".github/workflows/ci.yml").includes("pnpm package:firefox:android")
+      && read(".github/workflows/ci.yml").includes("artifact-package:")
   },
   {
     name: "Chromium, Firefox, and Safari package compatibility exists",
@@ -45,10 +46,14 @@ const checks = [
   {
     name: "Unit and package tests are present",
     weight: 10,
-    pass: packageJson.scripts?.["test:unit"] === "node --test tests/*.test.mjs"
+    pass: packageJson.scripts?.["test:unit"] === "node --test tests/bridge.test.mjs tests/catalog.test.mjs tests/content-contract.test.mjs tests/protocol.test.mjs"
       && existsSync(join(root, "tests", "protocol.test.mjs"))
       && existsSync(join(root, "tests", "bridge.test.mjs"))
       && existsSync(join(root, "tests", "catalog.test.mjs"))
+      && existsSync(join(root, "apps", "bridge", "test", "server.test.mjs"))
+      && existsSync(join(root, "tests", "content-contract.test.mjs"))
+      && existsSync(join(root, "tests", "extension.e2e.test.mjs"))
+      && packageJson.scripts?.["test:e2e"] === "node --test tests/extension.e2e.test.mjs"
   },
   {
     name: "Protocol input validation is hardened",
@@ -74,6 +79,7 @@ const checks = [
     pass: read("apps/bridge/src/activity-router.ts").includes("flushInProgress")
       && read("apps/bridge/src/activity-router.ts").includes("Failed to update Discord presence")
       && read("apps/bridge/src/server.ts").includes("closeWebSocketServer")
+      && read("apps/extension/src/content.ts").includes("pageshow")
   },
   {
     name: "Release artifact preparation exists",
@@ -84,14 +90,18 @@ const checks = [
       && packageJson.scripts?.["package:safari"] === "node tools/package-safari.mjs"
       && existsSync(join(root, "tools", "package-extension.mjs"))
       && existsSync(join(root, "tools", "package-bridge.mjs"))
-      && read(".github/workflows/release.yml").includes("activityweaver-firefox-android.tar.gz")
-      && read(".github/workflows/release.yml").includes("activityweaver-safari-ios.tar.gz")
+      && existsSync(join(root, "tools", "archive-directory.mjs"))
+      && existsSync(join(root, "tools", "create-release-manifest.mjs"))
+      && existsSync(join(root, "tools", "check-release-artifacts.mjs"))
+      && read(".github/workflows/release.yml").includes("activityweaver-firefox-android.zip")
+      && read(".github/workflows/release.yml").includes("activityweaver-safari-ios.zip")
+      && read(".github/workflows/release.yml").includes("--verify-tag")
       && existsSync(join(root, ".github", "workflows", "release.yml"))
   },
   {
     name: "Operational and contributor documentation exists",
     weight: 5,
-    pass: ["README.md", "SECURITY.md", "CONTRIBUTING.md", "docs/privacy.md", "docs/troubleshooting.md", "docs/platform-support.md", "CHANGELOG.md"]
+    pass: ["README.md", "SECURITY.md", "CONTRIBUTING.md", "docs/privacy.md", "docs/troubleshooting.md", "docs/platform-support.md", "docs/repository-governance.md", "CHANGELOG.md"]
       .every((file) => existsSync(join(root, file)))
   },
   {
@@ -99,6 +109,10 @@ const checks = [
     weight: 5,
     pass: read(".github/dependabot.yml").includes("package-ecosystem: npm")
       && read(".github/dependabot.yml").includes("package-ecosystem: github-actions")
+      && existsSync(join(root, ".github", "CODEOWNERS"))
+      && existsSync(join(root, ".github", "pull_request_template.md"))
+      && existsSync(join(root, ".github", "workflows", "codeql.yml"))
+      && existsSync(join(root, ".github", "workflows", "dependency-review.yml"))
       && read(".gitignore").includes("artifacts/")
       && read(".gitignore").includes("packages/activity-catalog/src/generated.ts")
   }

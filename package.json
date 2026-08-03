@@ -26,15 +26,19 @@
     "package:safari": "node tools/package-safari.mjs",
     "security:audit": "pnpm audit --audit-level=high",
     "test": "pnpm -r test && pnpm test:unit",
-    "test:unit": "node --test tests/*.test.mjs",
+    "test:unit": "node --test tests/bridge.test.mjs tests/catalog.test.mjs tests/content-contract.test.mjs tests/protocol.test.mjs",
+    "test:e2e": "node --test tests/extension.e2e.test.mjs",
     "typecheck": "pnpm -r typecheck",
     "validate": "node tools/validate-activities.mjs",
+    "check:artifacts": "node tools/check-release-artifacts.mjs",
+    "check:ci": "node tools/check-ci-hardening.mjs",
     "check:production": "node tools/check-production-readiness.mjs",
     "check:browsers": "node tools/check-browser-compatibility.mjs",
     "check:platforms": "node tools/check-platform-support.mjs",
-    "verify": "pnpm validate && pnpm build && pnpm lint && pnpm typecheck && pnpm test && pnpm security:audit && pnpm check:browsers && pnpm check:platforms && pnpm check:production"
+    "verify": "pnpm validate && pnpm build && pnpm lint && pnpm typecheck && pnpm test && pnpm security:audit && pnpm check:browsers && pnpm check:platforms && pnpm check:ci && pnpm check:production"
   },
   "devDependencies": {
+    "playwright": "1.62.1",
     "typescript": "^7.0.2"
   }
 }

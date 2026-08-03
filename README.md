@@ -7,9 +7,10 @@ catalog, a universal fallback for unknown sites, and clear validation rules.
 
 It is released under the BSD Zero Clause License (LICENSE) (0BSD).
 
-> Status: production-ready for the documented desktop paths, plus Firefox
-> Android and Safari mobile packages when paired with the authenticated remote
-> bridge. Chrome Android has no extension target.
+> Status: release-candidate ready for the documented desktop paths, plus
+> Firefox Android and Safari mobile packages when paired with the authenticated
+> remote bridge. Store signing and physical-device validation remain release
+> prerequisites. Chrome Android has no extension target.
 
 ## Why ActivityWeaver exists
 
@@ -78,6 +79,11 @@ pnpm validate
 pnpm build
 pnpm test
 ~~~
+
+To prepare production-shaped archives and a SHA-256 release manifest after the
+build, run `pnpm package:extension`, `pnpm package:bridge`,
+`pnpm package:firefox`, `pnpm package:firefox:android`, then
+`pnpm check:artifacts`.
 
 See docs/platform-support.md for the browser and operating-system support
 matrix, including authenticated mobile-browser setup.

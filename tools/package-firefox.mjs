@@ -1,5 +1,6 @@
 import { cp, mkdir, rm, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
+import { archiveDirectory } from "./archive-directory.mjs";
 
 const root = resolve(".");
 const source = join(root, "apps", "extension", "dist");
@@ -16,4 +17,5 @@ await writeFile(join(output, "README.txt"), [
   "The desktop bridge must be running separately.",
   ""
 ].join("\n"), "utf8");
+await archiveDirectory(join(output, "extension"), join(root, "artifacts", "activityweaver-firefox.zip"));
 console.log("Prepared " + output);

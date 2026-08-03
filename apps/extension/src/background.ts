@@ -26,54 +26,68 @@ let bridgeToken = "";
 let clientInstanceId = "client:unknown";
 let enabled = true;
 
-void loadSettings();
+let settingsReady = loadSettings();
 chrome.storage.onChanged.addListener((changes) => {
   if (changes.bridgeUrl?.newValue !== undefined
     || changes.bridgeToken?.newValue !== undefined
     || changes.bridgePort?.newValue !== undefined
     || changes.enabled?.newValue !== undefined) {
-    void loadSettings(true);
+    settingsReady = settingsReady.then(() => loadSettings(true));
+    void settingsReady.catch(() => undefined);
   }
 });
 
 chrome.runtime.onMessage.addListener((message: unknown, sender, sendResponse) => {
-  const content = parseContentMessage(message);
-  if (!content) {
-    sendResponse({ ok: false });
-    return false;
-  }
-
-  const tabId = sender.tab?.id;
-  const sourceId = clientInstanceId + ":" + (tabId === undefined ? "runtime:" + (sender.id ?? "unknown") : "tab:" + tabId);
-  if (content.type === "activity_update") {
-    const request: BridgeRequest = {
-      type: "set_activity",
-      protocol: PROTOCOL_VERSION,
-      envelope: {
-        source: {
-          id: sourceId,
-          tabId,
-          frameId: sender.frameId,
-          hostname: content.source.hostname,
-          url: content.source.url,
-          title: content.source.title
-        },
-        activity: content.activity,
-        observedAt: Date.now()
-      }
-    };
-    sendOrQueue(sourceId, request);
-  } else {
-    sendOrQueue(sourceId, {
-      type: "clear_activity",
-      protocol: PROTOCOL_VERSION,
-      sourceId
-    });
-  }
-
-  sendResponse({ ok: true });
-  return false;
+  void handleContentMessage(message, sender, sendResponse);
+  return true;
 });
+
+async function handleContentMessage(
+  message: unknown,
+  sender: chrome.runtime.MessageSender,
+  sendResponse: (response: { ok: boolean }) => void
+): Promise<void> {
+  try {
+    await settingsReady;
+    const content = parseContentMessage(message);
+    if (!content) {
+      sendResponse({ ok: false });
+      return;
+    }
+
+    const tabId = sender.tab?.id;
+    const sourceId = clientInstanceId + ":" + (tabId === undefined ? "runtime:" + (sender.id ?? "unknown") : "tab:" + tabId);
+    if (content.type === "activity_update") {
+      const request: BridgeRequest = {
+        type: "set_activity",
+        protocol: PROTOCOL_VERSION,
+        envelope: {
+          source: {
+            id: sourceId,
+            tabId,
+            frameId: sender.frameId,
+            hostname: content.source.hostname,
+            url: content.source.url,
+            title: content.source.title
+          },
+          activity: content.activity,
+          observedAt: Date.now()
+        }
+      };
+      sendOrQueue(sourceId, request);
+    } else {
+      sendOrQueue(sourceId, {
+        type: "clear_activity",
+        protocol: PROTOCOL_VERSION,
+        sourceId
+      });
+    }
+
+    sendResponse({ ok: true });
+  } catch {
+    sendResponse({ ok: false });
+  }
+}
 
 async function loadSettings(reconnect = false): Promise<void> {
   const settings = await chrome.storage.local.get({

@@ -25,7 +25,12 @@ function installObservers(): void {
   window.addEventListener("popstate", () => scheduleRefresh(50), { passive: true });
   window.addEventListener("hashchange", () => scheduleRefresh(50), { passive: true });
   window.addEventListener("pagehide", () => {
+    lastSignature = "";
     void chrome.runtime.sendMessage({ type: "activity_clear" });
+  }, { passive: true });
+  window.addEventListener("pageshow", () => {
+    lastSignature = "";
+    scheduleRefresh(50);
   }, { passive: true });
 }
 
