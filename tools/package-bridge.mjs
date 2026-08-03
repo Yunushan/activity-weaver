@@ -1,5 +1,6 @@
 import { cp, mkdir, readFile, realpath, rm, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
+import { archiveDirectory } from "./archive-directory.mjs";
 
 const root = resolve(".");
 const output = join(root, "artifacts", "activityweaver-bridge");
@@ -43,4 +44,5 @@ await writeFile(join(output, "README.txt"), [
   "certificate/key paths, then use the resulting wss:// endpoint in the extension.",
   ""
 ].join("\n"), "utf8");
+await archiveDirectory(output, join(root, "artifacts", "activityweaver-bridge.zip"));
 console.log("Prepared " + output);

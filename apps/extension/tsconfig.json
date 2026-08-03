@@ -14,5 +14,5 @@
       "@activityweaver/activity-catalog": ["../../packages/activity-catalog/src/index.ts"]
     }
   },
-  "include": ["src/**/*.ts", "vite.config.ts"]
+  "include": ["src/**/*.ts", "vite.config.ts", "vite.content.config.ts"]
 }

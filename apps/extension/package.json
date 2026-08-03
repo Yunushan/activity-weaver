@@ -15,7 +15,7 @@
     "vite": "^8.2.0"
   },
   "scripts": {
-    "build": "vite build",
+    "build": "vite build && vite build --config vite.content.config.ts",
     "dev": "vite build --watch",
     "lint": "node ../../tools/generate-catalog.mjs && tsc -p tsconfig.json --noEmit",
     "preview": "vite preview",

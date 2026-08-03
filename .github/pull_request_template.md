@@ -1,17 +1,7 @@
-## What changed?
+## Production-readiness checklist
 
-<!-- Describe the change and the reason for it. -->
-
-## Validation
-
-- [ ] pnpm validate
-- [ ] pnpm typecheck
-- [ ] pnpm build
-
-## Privacy review
-
-- [ ] No cookies, tokens, form values, private API responses, or full DOM data
-      are sent to the bridge.
-- [ ] Any URL path, button, or image field is intentionally safe to expose in
-      Discord.
-- [ ] The universal fallback still works if the adapter selectors fail.
+- [ ] I ran `pnpm verify` or documented the unavailable check.
+- [ ] I added or updated tests for behavior changes.
+- [ ] I checked privacy, permissions, and remote-bridge implications.
+- [ ] I did not include credentials, tokens, private URLs, or personal data.
+- [ ] Release-impacting changes update the changelog or release notes.

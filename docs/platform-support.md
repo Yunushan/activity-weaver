@@ -39,7 +39,12 @@ pnpm package:firefox
 pnpm package:firefox:android
 pnpm package:safari # macOS + Xcode only, defaults to macOS
 SAFARI_PLATFORM=ios pnpm package:safari # iOS/iPadOS Xcode project
+pnpm check:artifacts # after the non-Safari package commands
 ~~~
+
+The Chromium, Firefox desktop, Firefox Android, and bridge package commands
+also create deterministic ZIP archives under `artifacts/`. Safari projects are
+archived by the macOS release job after Xcode packaging.
 
 The desktop CI matrix runs the common build and test gate on Ubuntu, Windows,
 and macOS. Safari packaging is separately exercised on macOS because Xcode is

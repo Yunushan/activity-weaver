@@ -1,5 +1,6 @@
 import { cp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
+import { archiveDirectory } from "./archive-directory.mjs";
 
 const root = resolve(".");
 const source = join(root, "apps", "extension", "dist");
@@ -35,4 +36,5 @@ await writeFile(join(output, "README.txt"), [
   "Configure the extension with a wss:// endpoint and token for a desktop bridge.",
   ""
 ].join("\n"), "utf8");
+await archiveDirectory(extension, join(root, "artifacts", "activityweaver-firefox-android.zip"));
 console.log("Prepared " + output);

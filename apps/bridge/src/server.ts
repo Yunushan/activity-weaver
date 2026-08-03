@@ -53,7 +53,10 @@ export class BridgeServer {
     this.attachServer(localServer, false);
 
     if (!remote || !remoteTlsCredentials) return;
-    const tlsServer = createHttpsServer(remoteTlsCredentials);
+    const tlsServer = createHttpsServer({
+      ...remoteTlsCredentials,
+      minVersion: "TLSv1.2"
+    });
     const remoteServer = this.remoteServer = new WebSocketServer({
       server: tlsServer,
       maxPayload: 128 * 1024,

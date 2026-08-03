@@ -25,7 +25,7 @@ const checks = [
   ["Desktop OS CI matrix exists", ci.includes("os: [ubuntu-latest, windows-latest, macos-latest")],
   ["Safari macOS/iOS CI matrix exists", ci.includes("platform: [macos, ios]")],
   ["CI can be manually dispatched", ci.includes("workflow_dispatch:")],
-  ["Current pnpm setup action is used", ci.includes("pnpm/action-setup@v6") && release.includes("pnpm/action-setup@v6")],
+  ["Pinned pnpm setup action is used", /pnpm\/action-setup@[0-9a-f]{40}/i.test(ci) && /pnpm\/action-setup@[0-9a-f]{40}/i.test(release)],
   ["Node.js 26 is used in CI and release", ci.includes("node-version: 26") && release.includes("node-version: 26")]
 ];
 

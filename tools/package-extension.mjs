@@ -1,5 +1,6 @@
 import { cp, mkdir, rm, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
+import { archiveDirectory } from "./archive-directory.mjs";
 
 const root = resolve(".");
 const source = join(root, "apps", "extension", "dist");
@@ -15,4 +16,5 @@ await writeFile(join(output, "README.txt"), [
   "The local bridge must be running separately with ACTIVITYWEAVER_DISCORD_CLIENT_ID configured.",
   ""
 ].join("\n"), "utf8");
+await archiveDirectory(join(output, "extension"), join(root, "artifacts", "activityweaver-extension.zip"));
 console.log("Prepared " + output);
